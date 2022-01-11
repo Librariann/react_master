@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useQuery } from "react-query";
 import { Routes, Route, useLocation, useParams, useMatch } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { fetchCoinInfo, fetchCoinTickers } from "../api";
 import Chart from "./Chart";
@@ -17,7 +17,6 @@ const Container = styled.div`
 const Header = styled.header`
   height: 15vh;
   display: flex;
-  justify-content: center;
   align-items: center;
 `;
 
@@ -29,6 +28,7 @@ const Loader = styled.div`
 const Title = styled.h1`
   font-size: 48px;
   color: ${(props) => props.theme.accentColor};
+  margin-right: auto;
 `;
 
 interface RouteParams {
@@ -77,6 +77,10 @@ const Tab = styled.span<{ isActive: boolean }>`
   a {
     display: block;
   }
+`;
+
+const BackArrow = styled.div`
+  margin-right: auto;
 `;
 
 interface RouteState {
@@ -155,6 +159,7 @@ function Coin() {
     }
   );
   const loading = infoLoading || tickersLoading;
+  const navigate = useNavigate();
   return (
     <Container>
       <Helmet>
@@ -163,6 +168,9 @@ function Coin() {
         </title>
       </Helmet>
       <Header>
+        <BackArrow onClick={() => navigate("/", { replace: true })}>
+          뒤로가기
+        </BackArrow>
         <Title>
           {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
         </Title>

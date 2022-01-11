@@ -72,6 +72,9 @@ function Coins() {
         <Loader>Loading...</Loader>
       ) : (
         <CoinsList>
+          <Header>
+            <Title>코인</Title>
+          </Header>
           {data?.slice(0, 100).map((coin) => (
             <Coin key={coin.id}>
               <Link
