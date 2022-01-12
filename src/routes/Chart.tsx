@@ -33,7 +33,7 @@ function Chart() {
         "chart loading.."
       ) : (
         <ApexChart
-          type="line"
+          type="candlestick"
           series={[{ name: "price", data: data?.map((price) => price.close) }]}
           options={{
             theme: { mode: "dark" },
