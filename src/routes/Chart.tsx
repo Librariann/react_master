@@ -34,7 +34,16 @@ function Chart() {
       ) : (
         <ApexChart
           type="candlestick"
-          series={[{ name: "price", data: data?.map((price) => price.close) }]}
+          series={[
+            {
+              data: data?.map((item) => {
+                return {
+                  x: new Date(item.time_close),
+                  y: [item.open, item.high, item.low, item.close],
+                };
+              }),
+            },
+          ]}
           options={{
             theme: { mode: "dark" },
             chart: {
@@ -64,7 +73,7 @@ function Chart() {
               type: "gradient",
               gradient: { gradientToColors: ["#0be881"], stops: [0, 100] },
             },
-            colors: ["#0fbcf9"],
+            colors: ["#171818"],
             tooltip: {
               y: {
                 formatter: (value) => `$${value.toFixed(2)}`,
