@@ -18,7 +18,7 @@ const Th = styled.th`
   color: red;
 `;
 const Td = styled.td`
-  padding: 10px 0 10px 40px;
+  padding: 10px 0 10px 4px;
   border: 1px solid whitesmoke;
 `;
 interface IPrice {
