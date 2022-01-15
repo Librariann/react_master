@@ -18,7 +18,7 @@ const Th = styled.th`
   color: red;
 `;
 const Td = styled.td`
-  padding: 10px 0 10px 4px;
+  padding: 10px 0 10px 40px;
   border: 1px solid whitesmoke;
 `;
 interface IPrice {
@@ -61,9 +61,13 @@ function Price() {
             {data?.map((item, index) => {
               return (
                 <Tr key={index}>
-                  <Td>{`${new Date(item.time_close).getFullYear()}-${
-                    new Date(item.time_close).getMonth() + 1
-                  }-${new Date(item.time_close).getDate()}`}</Td>
+                  <Td>
+                    {`
+                      ${new Date(item.time_close).getFullYear()}
+                      -${new Date(item.time_close).getMonth() + 1}
+                      -${new Date(item.time_close).getDate()}
+                    `}
+                  </Td>
                   <Td>{item.close}</Td>
                 </Tr>
               );
