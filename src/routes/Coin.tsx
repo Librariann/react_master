@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 import { useQuery } from "react-query";
 import { Routes, Route, useLocation, useParams, useMatch } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { fetchCoinInfo, fetchCoinTickers } from "../api";
 import Chart from "./Chart";
@@ -16,18 +16,18 @@ const Container = styled.div`
 const Header = styled.header`
   height: 15vh;
   display: flex;
-  justify-content: center;
   align-items: center;
 `;
 
 const Loader = styled.div`
-  display:block;
+  display: block;
   text-align: center;
 `;
 
 const Title = styled.h1`
   font-size: 48px;
   color: ${(props) => props.theme.accentColor};
+  margin-right: auto;
 `;
 
 interface RouteParams {
@@ -78,8 +78,12 @@ const Tab = styled.span<{ isActive: boolean }>`
   }
 `;
 
-interface RouteState{
-  name:string;
+const BackArrow = styled.div`
+  margin-right: auto;
+`;
+
+interface RouteState {
+  name: string;
 }
 
 interface InfoData {
@@ -138,16 +142,34 @@ interface PriceData {
 }
 
 function Coin() {
-  const {coinId} = useParams() as unknown as RouteParams;
+  const { coinId } = useParams() as unknown as RouteParams;
   const state = useLocation().state as RouteState;
   const priceMatch = useMatch("/:coinId/price");
   const chartMatch = useMatch("/:coinId/chart");
-  const {isLoading: infoLoading, data: infoData} = useQuery<InfoData>(["info", coinId], () => fetchCoinInfo(coinId));
-  const {isLoading: tickersLoading, data: tickersData} = useQuery<PriceData>(["tickers", coinId], () => fetchCoinTickers(coinId));
+  const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(
+    ["info", coinId],
+    () => fetchCoinInfo(coinId)
+  );
+  const { isLoading: tickersLoading, data: tickersData } = useQuery<PriceData>(
+    ["tickers", coinId],
+    () => fetchCoinTickers(coinId),
+    {
+      refetchInterval: 5000,
+    }
+  );
   const loading = infoLoading || tickersLoading;
+  const navigate = useNavigate();
   return (
     <Container>
+      <Helmet>
+        <title>
+          {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
+        </title>
+      </Helmet>
       <Header>
+        <BackArrow onClick={() => navigate("/", { replace: true })}>
+          뒤로가기
+        </BackArrow>
         <Title>
           {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
         </Title>
@@ -166,8 +188,8 @@ function Coin() {
               <span>${infoData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
-              <span>Open Source:</span>
-              <span>{infoData?.open_source ? "Yes" : "No"}</span>
+              <span>Price:</span>
+              <span>${tickersData?.quotes?.USD?.price?.toFixed(3)}</span>
             </OverviewItem>
           </Overview>
           <Description>{infoData?.description}</Description>
@@ -181,7 +203,7 @@ function Coin() {
               <span>{tickersData?.max_supply}</span>
             </OverviewItem>
           </Overview>
-          
+
           <Tabs>
             <Tab isActive={chartMatch !== null}>
               <Link to={`/${coinId}/chart`}>Chart</Link>
@@ -191,7 +213,6 @@ function Coin() {
             </Tab>
           </Tabs>
 
-
           <Routes>
             <Route path="price" element={<Price />} />
             <Route path="chart" element={<Chart />} />
@@ -199,7 +220,7 @@ function Coin() {
         </>
       )}
     </Container>
-  )
+  );
 }
 
 export default Coin;
