@@ -70,7 +70,7 @@ function Coins() {
       </Header>
       { isLoading ? 
         (
-          <Loader>Loading...</Loader>
+          <Loader>Loading..</Loader>
         )
         :
         (
